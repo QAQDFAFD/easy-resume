@@ -12,12 +12,19 @@
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
+		},
+		{
+			"path": "pages/fillInfo/fillInfo",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarTitleText": "易简简历",
+		"navigationBarBackgroundColor": "#000",
+		"navigationStyle":"custom",
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {}

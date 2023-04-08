@@ -4,31 +4,39 @@
 			<view>Easy Resume</view>
 			<view>You can fill in some information finally choose a template to generate your customized resume.</view>
 		</view>
-		<view class="start">START</view>
+		<view class="start" @click="start">START</view>
 		<view class="footer">
 			<view class="chat">
 				<image src="https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/user.png" mode=""></image>Chat
 				with GPT
 			</view>
-			<view class="connect">
+			<view class="connect" @click="connect">
 				<image src="https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/users.png" mode=""></image>
 				Connect us
 			</view>
+			<uni-popup ref="popup" type="center">联系方式：wy15195382735@163.com</uni-popup>
 		</view>
 
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-
-			}
-		},
-		methods: {
-
-		}
+<script setup>
+	import {
+		ref
+	} from 'vue'
+	const popup = ref(null)
+	const connect = function() {
+		popup.value.open()
+	}
+	// const firstCloudObj = uniCloud.importObject('firstCloudObj')
+	// const start = async () => {
+	// 	const data = await firstCloudObj.method1(1)
+	// 	console.log(data);
+	// }
+	const start = () => {
+		uni.navigateTo({
+			url:"/pages/fillInfo/fillInfo",
+		})
 	}
 </script>
 

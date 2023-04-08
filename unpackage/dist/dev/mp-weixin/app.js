@@ -4,10 +4,17 @@ const common_vendor = require("./common/vendor.js");
 if (!Math) {
   "./pages/firstPage/firstPage.js";
   "./pages/whitePage/whitePage.js";
+  "./pages/fillInfo/fillInfo.js";
 }
 const _sfc_main = {
   onLaunch: function() {
     console.log("App Launch");
+    common_vendor.index.login({
+      provider: "univerify",
+      univerifyStyle: {
+        fullScreen: true
+      }
+    });
   },
   onShow: function() {
     console.log("App Show");

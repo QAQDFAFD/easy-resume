@@ -1,12 +1,14 @@
 {
   "pages": [
     "pages/firstPage/firstPage",
-    "pages/whitePage/whitePage"
+    "pages/whitePage/whitePage",
+    "pages/fillInfo/fillInfo"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
+    "navigationBarTitleText": "易简简历",
+    "navigationBarBackgroundColor": "#000",
+    "navigationStyle": "custom",
     "backgroundColor": "#F8F8F8"
   },
   "usingComponents": {}

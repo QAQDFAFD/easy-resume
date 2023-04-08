@@ -1497,7 +1497,7 @@ function populateParameters(fromRes, toRes) {
   let _SDKVersion = SDKVersion;
   const hostLanguage = language.replace(/_/g, "-");
   const parameters = {
-    appId: "",
+    appId: "__UNI__1C4F51E",
     appName: "uniapp-component-test",
     appVersion: "1.0.0",
     appVersionCode: "100",
@@ -1641,7 +1641,7 @@ const getAppBaseInfo = {
       hostName: _hostName,
       hostSDKVersion: SDKVersion,
       hostTheme: theme,
-      appId: "",
+      appId: "__UNI__1C4F51E",
       appName: "uniapp-component-test",
       appVersion: "1.0.0",
       appVersionCode: "100",
@@ -6233,6 +6233,10 @@ function stringify(styles) {
   }
   return ret;
 }
+function setRef(ref2, id, opts = {}) {
+  const { $templateRefs } = getCurrentInstance();
+  $templateRefs.push({ i: id, r: ref2, k: opts.k, f: opts.f });
+}
 const o$1 = (value, key) => vOn(value, key);
 const f$1 = (source, renderItem) => vFor(source, renderItem);
 const s$1 = (value) => stringifyStyle(value);
@@ -6240,6 +6244,7 @@ const e = (target, ...sources) => extend(target, ...sources);
 const n$1 = (value) => normalizeClass(value);
 const t$1 = (val) => toDisplayString(val);
 const p$1 = (props) => renderProps(props);
+const sr = (ref2, id, opts) => setRef(ref2, id, opts);
 function createApp$1(rootComponent, rootProps = null) {
   rootComponent && (rootComponent.mpType = "app");
   return createVueApp(rootComponent, rootProps).use(plugin);
@@ -7050,12 +7055,19 @@ const pages = [
     style: {
       navigationBarTitleText: "uni-app"
     }
+  },
+  {
+    path: "pages/fillInfo/fillInfo",
+    style: {
+      navigationBarTitleText: "uni-app"
+    }
   }
 ];
 const globalStyle = {
   navigationBarTextStyle: "black",
-  navigationBarTitleText: "uni-app",
-  navigationBarBackgroundColor: "#F8F8F8",
+  navigationBarTitleText: "易简简历",
+  navigationBarBackgroundColor: "#000",
+  navigationStyle: "custom",
   backgroundColor: "#F8F8F8"
 };
 const uniIdRouter = {};
@@ -7333,10 +7345,10 @@ function g(e2) {
 function m(e2) {
   return e2 && "string" == typeof e2 ? JSON.parse(e2) : e2;
 }
-const y = true, _ = "mp-weixin", v = m([]), S = _, k = m(""), I = m("[]") || [];
+const y = true, _ = "mp-weixin", v = m([]), S = _, k = m('{\n    "address": [\n        "127.0.0.1",\n        "192.168.137.1",\n        "192.168.145.1",\n        "192.168.228.1",\n        "10.0.1.109"\n    ],\n    "debugPort": 9000,\n    "initialLaunchType": "local",\n    "servePort": 7000,\n    "skipFiles": [\n        "<node_internals>/**",\n        "D:/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), I = m('[{"provider":"aliyun","spaceName":"easy-resume","spaceId":"mp-cb1db262-7994-471c-a97f-3bdb2b80dd4a","clientSecret":"hxOgl77myFQ6LeHsobpg6g==","endpoint":"https://api.next.bspapp.com"}]') || [];
 let T = "";
 try {
-  T = "";
+  T = "__UNI__1C4F51E";
 } catch (e2) {
 }
 let A = {};
@@ -9448,4 +9460,5 @@ exports.reactive = reactive;
 exports.ref = ref;
 exports.resolveComponent = resolveComponent;
 exports.s = s$1;
+exports.sr = sr;
 exports.t = t$1;
