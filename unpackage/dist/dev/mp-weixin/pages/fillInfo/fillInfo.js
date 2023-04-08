@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const store_info = require("../../store/info.js");
 if (!Array) {
   const _easycom_uni_easyinput2 = common_vendor.resolveComponent("uni-easyinput");
   const _easycom_uni_forms_item2 = common_vendor.resolveComponent("uni-forms-item");
@@ -15,26 +16,74 @@ if (!Math) {
 const _sfc_main = {
   __name: "fillInfo",
   setup(__props) {
-    const progressAll = common_vendor.ref(32);
+    store_info.info();
+    const progressAll = common_vendor.computed(() => question.length);
     const progressNum = common_vendor.ref(1);
-    const percent = common_vendor.ref(50);
-    const question = common_vendor.ref("Please insert your name：");
-    const inputName = common_vendor.ref("");
+    common_vendor.ref(false);
+    const question = common_vendor.reactive(["请输入你的姓名", "请输入你的手机号码", "请输入你的电子邮箱", "你的求职意向", "你的教育背景", "你的工作经验", "相关技能证书", "自我评价"]);
+    const questionEn = common_vendor.reactive([
+      "please enter your name",
+      "please enter your phone number",
+      "please enter your email address",
+      "your job objective",
+      "your education background",
+      "your work experience",
+      "relevant skills certificate",
+      "self-assessment"
+    ]);
+    const inputContent = common_vendor.reactive({
+      name: null,
+      tel: "",
+      email: "",
+      objective: "",
+      education: "",
+      experience: "",
+      certificate: "",
+      self: ""
+    });
+    const current = common_vendor.ref(0);
+    const percent = common_vendor.computed(() => {
+      return (current.value + 1) / progressAll.value * 100;
+    });
+    const imgs = common_vendor.reactive([
+      "https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/Rectangle 712.png",
+      "https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/Frame 3012.png"
+    ]);
+    const slideNext = () => {
+      current.value++;
+      progressNum.value++;
+    };
     const achieved = () => {
     };
+    common_vendor.watch(() => inputContent, () => {
+      console.log(inputContent);
+    }, {
+      deep: true
+    });
     return (_ctx, _cache) => {
       return {
         a: common_vendor.t(progressNum.value),
-        b: common_vendor.t(progressAll.value),
-        c: percent.value,
+        b: common_vendor.t(common_vendor.unref(progressAll)),
+        c: common_vendor.unref(percent),
         d: common_vendor.o(achieved),
-        e: common_vendor.t(question.value),
-        f: common_vendor.o(($event) => inputName.value = $event),
-        g: common_vendor.p({
-          type: "textarea",
-          placeholder: "Input your answer here",
-          modelValue: inputName.value
-        })
+        e: common_vendor.f(question, (item, index, i0) => {
+          return {
+            a: index % 2 === 0 ? imgs[0] : imgs[1],
+            b: common_vendor.t(question[index]),
+            c: "aec6f18f-2-" + i0 + "," + ("aec6f18f-1-" + i0),
+            d: common_vendor.o(($event) => inputContent[Object.keys(inputContent)[index]] = $event, item),
+            e: common_vendor.p({
+              type: "textarea",
+              placeholder: questionEn[index],
+              modelValue: inputContent[Object.keys(inputContent)[index]]
+            }),
+            f: "aec6f18f-1-" + i0 + "," + ("aec6f18f-0-" + i0),
+            g: "aec6f18f-0-" + i0,
+            h: common_vendor.o(slideNext, item),
+            i: item
+          };
+        }),
+        f: current.value
       };
     };
   }

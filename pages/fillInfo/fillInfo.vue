@@ -8,35 +8,87 @@
 			<progress :percent="percent" color="#5957FF" border-radius='10' active="true" active-mode="forwards"
 				backgroundColor="#404040" stroke-width="14" class="progress-bar" @activeend='achieved'></progress>
 		</view>
-		<image src="https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/Rectangle 712.png" mode=""></image>
-		<view class="main">
-			<view class="question">{{question}}</view>
-			<view class="answer">
-				<uni-forms>
-					<uni-forms-item>
-						<uni-easyinput type="textarea" v-model="inputName" placeholder="Input your answer here" />
-					</uni-forms-item>
-				</uni-forms>
-			</view>
-		</view>
-		<view class="next">next -></view>
+		<!-- 滑动块 -->
+		<swiper :current="current" touchable='false'>
+			<!-- 第一页 -->
+			<!-- 姓名、联系方式（邮箱、手机） -->
+			<swiper-item v-for="(item,index) in question" :key="item">
+				<image :src="index % 2 === 0 ? imgs[0] : imgs[1]" mode="">
+				</image>
+				<view class="main">
+					<view class="question">{{question[index]}}</view>
+					<view class="answer">
+						<uni-forms>
+							<uni-forms-item>
+								<uni-easyinput type="textarea" v-model="inputContent[Object.keys(inputContent)[index]]"
+									:placeholder="questionEn[index]" />
+							</uni-forms-item>
+						</uni-forms>
+					</view>
+				</view>
+				<view class="next" @click="slideNext">next -></view>
+			</swiper-item>
+		</swiper>
+
 	</view>
 </template>
 
 <script setup>
 	import {
-		ref
+		computed,
+		reactive,
+		ref,
+		watch
 	} from 'vue'
-	const progressAll = ref(32)
+	import {
+		info
+	} from '../../store/info.js'
+	const userInfo = info()
+	const progressAll = computed(() => question.length)
 	const progressNum = ref(1)
-	const percent = ref(50)
-	const question = ref('Please insert your name：')
-	const inputName = ref('')
+	const able = ref(false)
+	const question = reactive(['请输入你的姓名', '请输入你的手机号码', '请输入你的电子邮箱', '你的求职意向', '你的教育背景', '你的工作经验', '相关技能证书', '自我评价'])
+	const questionEn = reactive(['please enter your name', 'please enter your phone number',
+		'please enter your email address', 'your job objective', 'your education background',
+		'your work experience', 'relevant skills certificate', 'self-assessment'
+	])
+	const inputContent = reactive({
+		name: null,
+		tel: '',
+		email: '',
+		objective: '',
+		education: '',
+		experience: '',
+		certificate: '',
+		self: '',
+	})
+	// 当前所在的页面
+	const current = ref(0)
+	// 进度
+	const percent = computed(() => {
+		return ((current.value + 1) / progressAll.value) * 100
+	})
+	// 用于切换的图片
+	const imgs = reactive(['https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/Rectangle 712.png',
+		'https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/Frame 3012.png'
+	])
+
+	// 跳转到下一个页面
+	const slideNext = () => {
+		current.value++
+		progressNum.value++
+	}
 
 	// 进度条完成事件
 	const achieved = () => {
 		// todo
 	}
+
+	watch(() => inputContent, () => {
+		console.log(inputContent);
+	}, {
+		deep: true
+	})
 </script>
 
 <style lang="scss" scoped>
@@ -68,33 +120,52 @@
 
 		}
 
-		>image {
-			width: 686rpx;
-			height: 436rpx;
-			border-radius: 20rpx;
-			margin-top: 80rpx;
-		}
+		:deep(swiper) {
+			width: 100%;
+			height: calc(100vh - 156rpx - 176rpx);
 
-		.main {
-			width: 686rpx;
-			height: 322rpx;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin-top: 80rpx;
 
-			.question {}
+			image {
+				width: 686rpx;
+				height: 436rpx;
+				border-radius: 20rpx;
+				margin-top: 80rpx;
+			}
 
-			.answer {
-				margin-top: 32rpx;
-				
-				:deep(.uni-easyinput__content) {
+			swiper-item {
+				margin-right: 64rpx;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+
+				:last-child {
+					margin-right: 0;
+				}
+
+				.main {
 					width: 686rpx;
-					background-color: #404040 !important;
-					color: white !important;
+					height: 322rpx;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					margin-top: 80rpx;
+
+					.question {}
+
+					.answer {
+						margin-top: 32rpx;
+					}
 				}
 			}
+
 		}
+
+		:deep(.uni-easyinput__content) {
+			width: 686rpx;
+			background-color: #404040 !important;
+			color: white !important;
+		}
+
 
 		.next {
 			width: 686rpx;
