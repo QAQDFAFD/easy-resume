@@ -4,7 +4,7 @@ const info = common_vendor.defineStore("userUnfo", {
   state: () => {
     return {
       // 用户的信息
-      userInfo: []
+      userInfo: null
     };
   }
 });

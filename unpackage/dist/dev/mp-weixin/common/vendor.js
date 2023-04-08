@@ -7880,6 +7880,13 @@ const pages = [
     style: {
       navigationBarTitleText: "uni-app"
     }
+  },
+  {
+    path: "pages/confirm/confirm",
+    style: {
+      navigationBarTitleText: "",
+      enablePullDownRefresh: false
+    }
   }
 ];
 const globalStyle = {

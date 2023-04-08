@@ -2,7 +2,8 @@
   "pages": [
     "pages/firstPage/firstPage",
     "pages/whitePage/whitePage",
-    "pages/fillInfo/fillInfo"
+    "pages/fillInfo/fillInfo",
+    "pages/confirm/confirm"
   ],
   "window": {
     "navigationBarTextStyle": "black",

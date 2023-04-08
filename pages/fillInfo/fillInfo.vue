@@ -77,6 +77,15 @@
 	const slideNext = () => {
 		current.value++
 		progressNum.value++
+		if (progressNum.value === question.length + 1) {
+			progressNum.value = question.length
+			uni.navigateTo({
+				url: "/pages/confirm/confirm",
+			})
+			// 将数据提交
+			userInfo.userInfo = inputContent
+			console.log('123',userInfo.userInfo);
+		}
 	}
 
 	// 进度条完成事件
@@ -84,11 +93,14 @@
 		// todo
 	}
 
+	// todo:添加防抖函数
+
 	watch(() => inputContent, () => {
 		console.log(inputContent);
 	}, {
 		deep: true
 	})
+
 </script>
 
 <style lang="scss" scoped>

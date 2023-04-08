@@ -16,7 +16,7 @@ if (!Math) {
 const _sfc_main = {
   __name: "fillInfo",
   setup(__props) {
-    store_info.info();
+    const userInfo = store_info.info();
     const progressAll = common_vendor.computed(() => question.length);
     const progressNum = common_vendor.ref(1);
     common_vendor.ref(false);
@@ -52,6 +52,14 @@ const _sfc_main = {
     const slideNext = () => {
       current.value++;
       progressNum.value++;
+      if (progressNum.value === question.length + 1) {
+        progressNum.value = question.length;
+        common_vendor.index.navigateTo({
+          url: "/pages/confirm/confirm"
+        });
+        userInfo.userInfo = inputContent;
+        console.log("123", userInfo.userInfo);
+      }
     };
     const achieved = () => {
     };

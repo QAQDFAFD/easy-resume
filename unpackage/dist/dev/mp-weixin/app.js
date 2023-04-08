@@ -5,6 +5,7 @@ if (!Math) {
   "./pages/firstPage/firstPage.js";
   "./pages/whitePage/whitePage.js";
   "./pages/fillInfo/fillInfo.js";
+  "./pages/confirm/confirm.js";
 }
 const _sfc_main = {
   onLaunch: function() {
