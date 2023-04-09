@@ -15,9 +15,44 @@ const _sfc_main = {
     const connect = function() {
       popup.value.open();
     };
+    common_vendor.Es.importObject("firstCloudObj");
     const start = () => {
+      login();
       common_vendor.index.navigateTo({
         url: "/pages/fillInfo/fillInfo"
+      });
+    };
+    const login = () => {
+      console.log("执行登录");
+      common_vendor.index.login({
+        "provider": "weixin",
+        "onlyAuthorize": true,
+        success: function(event) {
+          console.log("获取code成功");
+          const {
+            code
+          } = event;
+          console.log(code);
+          common_vendor.index.request({
+            method: "POST",
+            url: "http://localhost:3007/wx/wxLogin",
+            data: {
+              code,
+              appSecret: "42f38be11589d5e8657cc62426166218",
+              appId: "wx402e26b7d373de75"
+            },
+            header: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function(res) {
+              common_vendor.index.setStorageSync("token", res.data);
+              console.log(res.data);
+            }
+          });
+        },
+        fail: function(e) {
+          console.log(e.code);
+        }
       });
     };
     return (_ctx, _cache) => {

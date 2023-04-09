@@ -161,6 +161,9 @@ const looseToNumber = (val) => {
 };
 const LINEFEED = "\n";
 const SLOT_DEFAULT_NAME = "d";
+const UNI_SSR = "__uniSSR";
+const UNI_SSR_DATA = "data";
+const UNI_SSR_GLOBAL_DATA = "globalData";
 const ON_SHOW = "onShow";
 const ON_HIDE = "onHide";
 const ON_LAUNCH = "onLaunch";
@@ -480,12 +483,12 @@ function include(str, parts) {
 function startsWith(str, parts) {
   return parts.find((part) => str.indexOf(part) === 0);
 }
-function normalizeLocale(locale, messages) {
+function normalizeLocale(locale, messages2) {
   if (!locale) {
     return;
   }
   locale = locale.trim().replace(/_/g, "-");
-  if (messages && messages[locale]) {
+  if (messages2 && messages2[locale]) {
     return locale;
   }
   locale = locale.toLowerCase();
@@ -510,7 +513,7 @@ function normalizeLocale(locale, messages) {
   }
 }
 class I18n {
-  constructor({ locale, fallbackLocale, messages, watcher, formater }) {
+  constructor({ locale, fallbackLocale, messages: messages2, watcher, formater }) {
     this.locale = LOCALE_EN;
     this.fallbackLocale = LOCALE_EN;
     this.message = {};
@@ -520,7 +523,7 @@ class I18n {
       this.fallbackLocale = fallbackLocale;
     }
     this.formater = formater || defaultFormatter;
-    this.messages = messages || {};
+    this.messages = messages2 || {};
     this.setLocale(locale || LOCALE_EN);
     if (watcher) {
       this.watchLocale(watcher);
@@ -602,10 +605,10 @@ function getDefaultLocale() {
   }
   return LOCALE_EN;
 }
-function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
+function initVueI18n(locale, messages2 = {}, fallbackLocale, watcher) {
   if (typeof locale !== "string") {
-    [locale, messages] = [
-      messages,
+    [locale, messages2] = [
+      messages2,
       locale
     ];
   }
@@ -618,7 +621,7 @@ function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
   const i18n = new I18n({
     locale,
     fallbackLocale,
-    messages,
+    messages: messages2,
     watcher
   });
   let t2 = (key, values) => {
@@ -2732,6 +2735,9 @@ function isRef(r2) {
 }
 function ref(value) {
   return createRef(value, false);
+}
+function shallowRef(value) {
+  return createRef(value, true);
 }
 function createRef(rawValue, shallow) {
   if (isRef(rawValue)) {
@@ -6263,6 +6269,70 @@ function vFor(source, renderItem) {
   }
   return ret;
 }
+function renderSlot(name, props = {}, key) {
+  const instance = getCurrentInstance();
+  const { parent, isMounted, ctx: { $scope } } = instance;
+  const vueIds = ($scope.properties || $scope.props).uI;
+  if (!vueIds) {
+    return;
+  }
+  if (!parent && !isMounted) {
+    onMounted(() => {
+      renderSlot(name, props, key);
+    }, instance);
+    return;
+  }
+  const invoker = findScopedSlotInvoker(vueIds, instance);
+  if (invoker) {
+    invoker(name, props, key);
+  }
+}
+function findScopedSlotInvoker(vueId, instance) {
+  let parent = instance.parent;
+  while (parent) {
+    const invokers = parent.$ssi;
+    if (invokers && invokers[vueId]) {
+      return invokers[vueId];
+    }
+    parent = parent.parent;
+  }
+}
+function withScopedSlot(fn2, { name, path, vueId }) {
+  const instance = getCurrentInstance();
+  fn2.path = path;
+  const scopedSlots = instance.$ssi || (instance.$ssi = {});
+  const invoker = scopedSlots[vueId] || (scopedSlots[vueId] = createScopedSlotInvoker(instance));
+  if (!invoker.slots[name]) {
+    invoker.slots[name] = {
+      fn: fn2
+    };
+  } else {
+    invoker.slots[name].fn = fn2;
+  }
+  return getValueByDataPath(instance.ctx.$scope.data, path);
+}
+function createScopedSlotInvoker(instance) {
+  const invoker = (slotName, args, index2) => {
+    const slot = invoker.slots[slotName];
+    if (!slot) {
+      return;
+    }
+    const hasIndex = typeof index2 !== "undefined";
+    index2 = index2 || 0;
+    const prevInstance = setCurrentRenderingInstance(instance);
+    const data = slot.fn(args, slotName + (hasIndex ? "-" + index2 : ""), index2);
+    const path = slot.fn.path;
+    setCurrentRenderingInstance(prevInstance);
+    (instance.$scopedSlotsData || (instance.$scopedSlotsData = [])).push({
+      path,
+      index: index2,
+      data
+    });
+    instance.$updateScopedSlots();
+  };
+  invoker.slots = {};
+  return invoker;
+}
 function stringifyStyle(value) {
   if (isString(value)) {
     return value;
@@ -6285,6 +6355,8 @@ function setRef(ref2, id, opts = {}) {
 }
 const o$1 = (value, key) => vOn(value, key);
 const f$1 = (source, renderItem) => vFor(source, renderItem);
+const r$1 = (name, props, key) => renderSlot(name, props, key);
+const w = (fn2, options) => withScopedSlot(fn2, options);
 const s$1 = (value) => stringifyStyle(value);
 const e = (target, ...sources) => extend(target, ...sources);
 const n$1 = (value) => normalizeClass(value);
@@ -7887,6 +7959,30 @@ const pages = [
       navigationBarTitleText: "",
       enablePullDownRefresh: false
     }
+  },
+  {
+    path: "pages/opendb-contacts/add",
+    style: {
+      navigationBarTitleText: "新增"
+    }
+  },
+  {
+    path: "pages/opendb-contacts/edit",
+    style: {
+      navigationBarTitleText: "编辑"
+    }
+  },
+  {
+    path: "pages/opendb-contacts/list",
+    style: {
+      navigationBarTitleText: "列表"
+    }
+  },
+  {
+    path: "pages/opendb-contacts/detail",
+    style: {
+      navigationBarTitleText: "详情"
+    }
   }
 ];
 const globalStyle = {
@@ -7900,7 +7996,10 @@ const uniIdRouter = {};
 const t = {
   pages,
   globalStyle,
-  uniIdRouter
+  uniIdRouter,
+  "scope.phoneNumber": {
+    desc: "你的手机号码将用于小程序的登录和用户体验"
+  }
 };
 function n(e2) {
   return e2 && e2.__esModule && Object.prototype.hasOwnProperty.call(e2, "default") ? e2.default : e2;
@@ -8051,8 +8150,8 @@ var r = s(function(e2, t2) {
         var s3 = t4 + n3, r3 = e4[s3];
         e4[s3] = 16711935 & (r3 << 8 | r3 >>> 24) | 4278255360 & (r3 << 24 | r3 >>> 8);
       }
-      var i3 = this._hash.words, o3 = e4[t4 + 0], c3 = e4[t4 + 1], f2 = e4[t4 + 2], p2 = e4[t4 + 3], g2 = e4[t4 + 4], m2 = e4[t4 + 5], y2 = e4[t4 + 6], _2 = e4[t4 + 7], w = e4[t4 + 8], v2 = e4[t4 + 9], S2 = e4[t4 + 10], k2 = e4[t4 + 11], I2 = e4[t4 + 12], b = e4[t4 + 13], T2 = e4[t4 + 14], A2 = e4[t4 + 15], C2 = i3[0], P2 = i3[1], E2 = i3[2], O2 = i3[3];
-      C2 = u2(C2, P2, E2, O2, o3, 7, a2[0]), O2 = u2(O2, C2, P2, E2, c3, 12, a2[1]), E2 = u2(E2, O2, C2, P2, f2, 17, a2[2]), P2 = u2(P2, E2, O2, C2, p2, 22, a2[3]), C2 = u2(C2, P2, E2, O2, g2, 7, a2[4]), O2 = u2(O2, C2, P2, E2, m2, 12, a2[5]), E2 = u2(E2, O2, C2, P2, y2, 17, a2[6]), P2 = u2(P2, E2, O2, C2, _2, 22, a2[7]), C2 = u2(C2, P2, E2, O2, w, 7, a2[8]), O2 = u2(O2, C2, P2, E2, v2, 12, a2[9]), E2 = u2(E2, O2, C2, P2, S2, 17, a2[10]), P2 = u2(P2, E2, O2, C2, k2, 22, a2[11]), C2 = u2(C2, P2, E2, O2, I2, 7, a2[12]), O2 = u2(O2, C2, P2, E2, b, 12, a2[13]), E2 = u2(E2, O2, C2, P2, T2, 17, a2[14]), C2 = l2(C2, P2 = u2(P2, E2, O2, C2, A2, 22, a2[15]), E2, O2, c3, 5, a2[16]), O2 = l2(O2, C2, P2, E2, y2, 9, a2[17]), E2 = l2(E2, O2, C2, P2, k2, 14, a2[18]), P2 = l2(P2, E2, O2, C2, o3, 20, a2[19]), C2 = l2(C2, P2, E2, O2, m2, 5, a2[20]), O2 = l2(O2, C2, P2, E2, S2, 9, a2[21]), E2 = l2(E2, O2, C2, P2, A2, 14, a2[22]), P2 = l2(P2, E2, O2, C2, g2, 20, a2[23]), C2 = l2(C2, P2, E2, O2, v2, 5, a2[24]), O2 = l2(O2, C2, P2, E2, T2, 9, a2[25]), E2 = l2(E2, O2, C2, P2, p2, 14, a2[26]), P2 = l2(P2, E2, O2, C2, w, 20, a2[27]), C2 = l2(C2, P2, E2, O2, b, 5, a2[28]), O2 = l2(O2, C2, P2, E2, f2, 9, a2[29]), E2 = l2(E2, O2, C2, P2, _2, 14, a2[30]), C2 = h2(C2, P2 = l2(P2, E2, O2, C2, I2, 20, a2[31]), E2, O2, m2, 4, a2[32]), O2 = h2(O2, C2, P2, E2, w, 11, a2[33]), E2 = h2(E2, O2, C2, P2, k2, 16, a2[34]), P2 = h2(P2, E2, O2, C2, T2, 23, a2[35]), C2 = h2(C2, P2, E2, O2, c3, 4, a2[36]), O2 = h2(O2, C2, P2, E2, g2, 11, a2[37]), E2 = h2(E2, O2, C2, P2, _2, 16, a2[38]), P2 = h2(P2, E2, O2, C2, S2, 23, a2[39]), C2 = h2(C2, P2, E2, O2, b, 4, a2[40]), O2 = h2(O2, C2, P2, E2, o3, 11, a2[41]), E2 = h2(E2, O2, C2, P2, p2, 16, a2[42]), P2 = h2(P2, E2, O2, C2, y2, 23, a2[43]), C2 = h2(C2, P2, E2, O2, v2, 4, a2[44]), O2 = h2(O2, C2, P2, E2, I2, 11, a2[45]), E2 = h2(E2, O2, C2, P2, A2, 16, a2[46]), C2 = d2(C2, P2 = h2(P2, E2, O2, C2, f2, 23, a2[47]), E2, O2, o3, 6, a2[48]), O2 = d2(O2, C2, P2, E2, _2, 10, a2[49]), E2 = d2(E2, O2, C2, P2, T2, 15, a2[50]), P2 = d2(P2, E2, O2, C2, m2, 21, a2[51]), C2 = d2(C2, P2, E2, O2, I2, 6, a2[52]), O2 = d2(O2, C2, P2, E2, p2, 10, a2[53]), E2 = d2(E2, O2, C2, P2, S2, 15, a2[54]), P2 = d2(P2, E2, O2, C2, c3, 21, a2[55]), C2 = d2(C2, P2, E2, O2, w, 6, a2[56]), O2 = d2(O2, C2, P2, E2, A2, 10, a2[57]), E2 = d2(E2, O2, C2, P2, y2, 15, a2[58]), P2 = d2(P2, E2, O2, C2, b, 21, a2[59]), C2 = d2(C2, P2, E2, O2, g2, 6, a2[60]), O2 = d2(O2, C2, P2, E2, k2, 10, a2[61]), E2 = d2(E2, O2, C2, P2, f2, 15, a2[62]), P2 = d2(P2, E2, O2, C2, v2, 21, a2[63]), i3[0] = i3[0] + C2 | 0, i3[1] = i3[1] + P2 | 0, i3[2] = i3[2] + E2 | 0, i3[3] = i3[3] + O2 | 0;
+      var i3 = this._hash.words, o3 = e4[t4 + 0], c3 = e4[t4 + 1], f2 = e4[t4 + 2], p2 = e4[t4 + 3], g2 = e4[t4 + 4], m2 = e4[t4 + 5], y2 = e4[t4 + 6], _2 = e4[t4 + 7], w2 = e4[t4 + 8], v2 = e4[t4 + 9], S2 = e4[t4 + 10], k2 = e4[t4 + 11], I2 = e4[t4 + 12], b = e4[t4 + 13], T2 = e4[t4 + 14], A2 = e4[t4 + 15], C2 = i3[0], P2 = i3[1], E2 = i3[2], O2 = i3[3];
+      C2 = u2(C2, P2, E2, O2, o3, 7, a2[0]), O2 = u2(O2, C2, P2, E2, c3, 12, a2[1]), E2 = u2(E2, O2, C2, P2, f2, 17, a2[2]), P2 = u2(P2, E2, O2, C2, p2, 22, a2[3]), C2 = u2(C2, P2, E2, O2, g2, 7, a2[4]), O2 = u2(O2, C2, P2, E2, m2, 12, a2[5]), E2 = u2(E2, O2, C2, P2, y2, 17, a2[6]), P2 = u2(P2, E2, O2, C2, _2, 22, a2[7]), C2 = u2(C2, P2, E2, O2, w2, 7, a2[8]), O2 = u2(O2, C2, P2, E2, v2, 12, a2[9]), E2 = u2(E2, O2, C2, P2, S2, 17, a2[10]), P2 = u2(P2, E2, O2, C2, k2, 22, a2[11]), C2 = u2(C2, P2, E2, O2, I2, 7, a2[12]), O2 = u2(O2, C2, P2, E2, b, 12, a2[13]), E2 = u2(E2, O2, C2, P2, T2, 17, a2[14]), C2 = l2(C2, P2 = u2(P2, E2, O2, C2, A2, 22, a2[15]), E2, O2, c3, 5, a2[16]), O2 = l2(O2, C2, P2, E2, y2, 9, a2[17]), E2 = l2(E2, O2, C2, P2, k2, 14, a2[18]), P2 = l2(P2, E2, O2, C2, o3, 20, a2[19]), C2 = l2(C2, P2, E2, O2, m2, 5, a2[20]), O2 = l2(O2, C2, P2, E2, S2, 9, a2[21]), E2 = l2(E2, O2, C2, P2, A2, 14, a2[22]), P2 = l2(P2, E2, O2, C2, g2, 20, a2[23]), C2 = l2(C2, P2, E2, O2, v2, 5, a2[24]), O2 = l2(O2, C2, P2, E2, T2, 9, a2[25]), E2 = l2(E2, O2, C2, P2, p2, 14, a2[26]), P2 = l2(P2, E2, O2, C2, w2, 20, a2[27]), C2 = l2(C2, P2, E2, O2, b, 5, a2[28]), O2 = l2(O2, C2, P2, E2, f2, 9, a2[29]), E2 = l2(E2, O2, C2, P2, _2, 14, a2[30]), C2 = h2(C2, P2 = l2(P2, E2, O2, C2, I2, 20, a2[31]), E2, O2, m2, 4, a2[32]), O2 = h2(O2, C2, P2, E2, w2, 11, a2[33]), E2 = h2(E2, O2, C2, P2, k2, 16, a2[34]), P2 = h2(P2, E2, O2, C2, T2, 23, a2[35]), C2 = h2(C2, P2, E2, O2, c3, 4, a2[36]), O2 = h2(O2, C2, P2, E2, g2, 11, a2[37]), E2 = h2(E2, O2, C2, P2, _2, 16, a2[38]), P2 = h2(P2, E2, O2, C2, S2, 23, a2[39]), C2 = h2(C2, P2, E2, O2, b, 4, a2[40]), O2 = h2(O2, C2, P2, E2, o3, 11, a2[41]), E2 = h2(E2, O2, C2, P2, p2, 16, a2[42]), P2 = h2(P2, E2, O2, C2, y2, 23, a2[43]), C2 = h2(C2, P2, E2, O2, v2, 4, a2[44]), O2 = h2(O2, C2, P2, E2, I2, 11, a2[45]), E2 = h2(E2, O2, C2, P2, A2, 16, a2[46]), C2 = d2(C2, P2 = h2(P2, E2, O2, C2, f2, 23, a2[47]), E2, O2, o3, 6, a2[48]), O2 = d2(O2, C2, P2, E2, _2, 10, a2[49]), E2 = d2(E2, O2, C2, P2, T2, 15, a2[50]), P2 = d2(P2, E2, O2, C2, m2, 21, a2[51]), C2 = d2(C2, P2, E2, O2, I2, 6, a2[52]), O2 = d2(O2, C2, P2, E2, p2, 10, a2[53]), E2 = d2(E2, O2, C2, P2, S2, 15, a2[54]), P2 = d2(P2, E2, O2, C2, c3, 21, a2[55]), C2 = d2(C2, P2, E2, O2, w2, 6, a2[56]), O2 = d2(O2, C2, P2, E2, A2, 10, a2[57]), E2 = d2(E2, O2, C2, P2, y2, 15, a2[58]), P2 = d2(P2, E2, O2, C2, b, 21, a2[59]), C2 = d2(C2, P2, E2, O2, g2, 6, a2[60]), O2 = d2(O2, C2, P2, E2, k2, 10, a2[61]), E2 = d2(E2, O2, C2, P2, f2, 15, a2[62]), P2 = d2(P2, E2, O2, C2, v2, 21, a2[63]), i3[0] = i3[0] + C2 | 0, i3[1] = i3[1] + P2 | 0, i3[2] = i3[2] + E2 | 0, i3[3] = i3[3] + O2 | 0;
     }, _doFinalize: function() {
       var t4 = this._data, n3 = t4.words, s3 = 8 * this._nDataBytes, r3 = 8 * t4.sigBytes;
       n3[r3 >>> 5] |= 128 << 24 - r3 % 32;
@@ -8171,7 +8270,7 @@ function g(e2) {
 function m(e2) {
   return e2 && "string" == typeof e2 ? JSON.parse(e2) : e2;
 }
-const y = true, _ = "mp-weixin", v = m([]), S = _, k = m('{\n    "address": [\n        "127.0.0.1",\n        "192.168.137.1",\n        "192.168.145.1",\n        "192.168.228.1",\n        "10.0.1.109"\n    ],\n    "debugPort": 9001,\n    "initialLaunchType": "local",\n    "servePort": 7001,\n    "skipFiles": [\n        "<node_internals>/**",\n        "D:/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), I = m('[{"provider":"aliyun","spaceName":"easy-resume","spaceId":"mp-cb1db262-7994-471c-a97f-3bdb2b80dd4a","clientSecret":"hxOgl77myFQ6LeHsobpg6g==","endpoint":"https://api.next.bspapp.com"}]') || [];
+const y = true, _ = "mp-weixin", v = m([]), S = _, k = m('{\n    "address": [\n        "127.0.0.1",\n        "192.168.137.1",\n        "192.168.145.1",\n        "192.168.228.1",\n        "10.0.1.105"\n    ],\n    "debugPort": 9000,\n    "initialLaunchType": "local",\n    "servePort": 7000,\n    "skipFiles": [\n        "<node_internals>/**",\n        "D:/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), I = m('[{"provider":"aliyun","spaceName":"easy-resume","spaceId":"mp-cb1db262-7994-471c-a97f-3bdb2b80dd4a","clientSecret":"hxOgl77myFQ6LeHsobpg6g==","endpoint":"https://api.next.bspapp.com"}]') || [];
 let T = "";
 try {
   T = "__UNI__1C4F51E";
@@ -9768,7 +9867,7 @@ function Yn(e2 = "", t2 = {}) {
   return n2.some((e3) => e3.pagePath === s2);
 }
 const Qn = !!t.uniIdRouter;
-const { loginPage: Xn, routerNeedLogin: Zn, resToLogin: es, needLoginPage: ts, notNeedLoginPage: ns, loginPageInTabBar: ss } = function({ pages: e2 = [], subPackages: n2 = [], uniIdRouter: s2 = {}, tabBar: r2 = {} } = t) {
+const { loginPage: Xn, routerNeedLogin: Zn, resToLogin: es$1, needLoginPage: ts, notNeedLoginPage: ns, loginPageInTabBar: ss } = function({ pages: e2 = [], subPackages: n2 = [], uniIdRouter: s2 = {}, tabBar: r2 = {} } = t) {
   const { loginPage: i2, needLogin: o2 = [], resToLogin: a2 = true } = s2, { needLoginPage: c2, notNeedLoginPage: u2 } = Jn(e2), { needLoginPage: l2, notNeedLoginPage: h2 } = function(e3 = []) {
     const t2 = [], n3 = [];
     return e3.forEach((e4) => {
@@ -9898,7 +9997,7 @@ function hs(e2) {
       W(F, e4);
     }, Qn && (C("_globalUniCloudStatus").needLoginInit || (C("_globalUniCloudStatus").needLoginInit = true, G().then(() => {
       us.call(e3);
-    }), es && ls.call(e3)));
+    }), es$1 && ls.call(e3)));
   }(e2), function(e3) {
     e3.onRefreshToken = function(e4) {
       $(q, e4);
@@ -10272,6 +10371,76 @@ let Ps = new class {
   } }), hs(Ps), Ps.addInterceptor = O, Ps.removeInterceptor = x, Ps.interceptObject = L;
 })();
 var Es = Ps;
+function getSSRDataType() {
+  return getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
+}
+function assertKey(key, shallow = false) {
+  if (!key) {
+    throw new Error(`${shallow ? "shallowSsrRef" : "ssrRef"}: You must provide a key.`);
+  }
+}
+const ssrClientRef = (value, key, shallow = false) => {
+  const valRef = shallow ? shallowRef(value) : ref(value);
+  if (typeof window === "undefined") {
+    return valRef;
+  }
+  const __uniSSR = window[UNI_SSR];
+  if (!__uniSSR) {
+    return valRef;
+  }
+  const type = getSSRDataType();
+  assertKey(key, shallow);
+  if (hasOwn$1(__uniSSR[type], key)) {
+    valRef.value = __uniSSR[type][key];
+    if (type === UNI_SSR_DATA) {
+      delete __uniSSR[type][key];
+    }
+  }
+  return valRef;
+};
+const ssrRef = (value, key) => {
+  return ssrClientRef(value, key);
+};
+const shallowSsrRef = (value, key) => {
+  return ssrClientRef(value, key, true);
+};
+const en = {
+  "uniCloud.component.add.success": "Success",
+  "uniCloud.component.update.success": "Success",
+  "uniCloud.component.remove.showModal.title": "Tips",
+  "uniCloud.component.remove.showModal.content": "是否删除该数据"
+};
+const es = {
+  "uniCloud.component.add.success": "新增成功",
+  "uniCloud.component.update.success": "修改成功",
+  "uniCloud.component.remove.showModal.title": "提示",
+  "uniCloud.component.remove.showModal.content": "是否删除该数据"
+};
+const fr = {
+  "uniCloud.component.add.success": "新增成功",
+  "uniCloud.component.update.success": "修改成功",
+  "uniCloud.component.remove.showModal.title": "提示",
+  "uniCloud.component.remove.showModal.content": "是否删除该数据"
+};
+const zhHans = {
+  "uniCloud.component.add.success": "新增成功",
+  "uniCloud.component.update.success": "修改成功",
+  "uniCloud.component.remove.showModal.title": "提示",
+  "uniCloud.component.remove.showModal.content": "是否删除该数据"
+};
+const zhHant = {
+  "uniCloud.component.add.success": "新增成功",
+  "uniCloud.component.update.success": "修改成功",
+  "uniCloud.component.remove.showModal.title": "提示",
+  "uniCloud.component.remove.showModal.content": "是否刪除數據"
+};
+const messages = {
+  en,
+  es,
+  fr,
+  "zh-Hans": zhHans,
+  "zh-Hant": zhHant
+};
 exports.Es = Es;
 exports.Pinia = Pinia;
 exports._export_sfc = _export_sfc;
@@ -10281,16 +10450,23 @@ exports.createSSRApp = createSSRApp;
 exports.defineStore = defineStore;
 exports.e = e;
 exports.f = f$1;
+exports.getCurrentInstance = getCurrentInstance;
 exports.index = index;
 exports.initVueI18n = initVueI18n;
+exports.messages = messages;
 exports.n = n$1;
 exports.o = o$1;
+exports.onMounted = onMounted;
 exports.p = p$1;
+exports.r = r$1;
 exports.reactive = reactive;
 exports.ref = ref;
 exports.resolveComponent = resolveComponent;
 exports.s = s$1;
+exports.shallowSsrRef = shallowSsrRef;
 exports.sr = sr;
+exports.ssrRef = ssrRef;
 exports.t = t$1;
 exports.unref = unref;
+exports.w = w;
 exports.watch = watch;

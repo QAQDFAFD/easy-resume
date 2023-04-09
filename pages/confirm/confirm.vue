@@ -123,9 +123,9 @@
 		}, 500);
 	}
 
-	onReady() {
-		getServerData()
-	}
+	// onReady() {
+	// 	getServerData()
+	// }
 </script>
 
 <style>

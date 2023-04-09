@@ -5,6 +5,18 @@
 			<view>You can fill in some information finally choose a template to generate your customized resume.</view>
 		</view>
 		<view class="start" @click="start">START</view>
+		<!-- <unicloud-db ref="udb" v-slot:default='{data,loading,error,options}' collection="contacts">
+			<view v-if='error'>
+
+			</view>
+			<view v-else>
+				<uni-list>
+					<uni-list-item v-for="item in data" :key="item._id" :note="item.phone" link>{{item.name}}
+					</uni-list-item>
+				</uni-list>
+
+			</view>
+		</unicloud-db> -->
 		<view class="footer">
 			<view class="chat">
 				<image src="https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/user.png" mode=""></image>Chat
@@ -28,14 +40,73 @@
 	const connect = function() {
 		popup.value.open()
 	}
-	// const firstCloudObj = uniCloud.importObject('firstCloudObj')
-	// const start = async () => {
-	// 	const data = await firstCloudObj.method1(1)
-	// 	console.log(data);
+	// 导入云对象
+	const firstCloudObj = uniCloud.importObject('firstCloudObj')
+
+	// const add = () => {
+	// 	const db = uniCloud.database()
+	// 	db.collection('contacts').add({
+	// 		"name": "李嘉俊",
+	// 		"phone": "手机15195382735"
+	// 	}).then(res => console.log("123",res))
 	// }
 	const start = () => {
+		// 执行登录
+		login()
 		uni.navigateTo({
-			url:"/pages/fillInfo/fillInfo",
+			url: "/pages/fillInfo/fillInfo",
+		})
+	}
+
+	// 获取用户的手机号
+	// const getPhoneNumber = (e) => {
+	// 	if (e.detail.errMsg == "getPhoneNumber:ok") {
+	// 		console.log("用户点击了接受")
+	// 		console.log(e.detail);
+	// 		let encryptedData = e.detail.encryptedData
+	// 		let errMsg = e.detail.errMsg
+	// 		let iv = e.detail.iv
+	// 	} else {
+	// 		console.log("用户点击了拒绝")
+	// 	}
+	// }
+
+
+	const login = () => {
+		console.log('执行登录');
+		uni.login({
+			"provider": 'weixin',
+			"onlyAuthorize": true,
+			success: function(event) {
+				console.log('获取code成功');
+				const {
+					code
+				} = event
+				// 打印出code
+				console.log(code);
+
+				// 用户获得了临时票据code，向服务端发起登录请求
+				uni.request({
+					method: 'POST',
+					url: 'http://localhost:3007/wx/wxLogin',
+					data: {
+						code: code,
+						appSecret: '42f38be11589d5e8657cc62426166218',
+						appId: 'wx402e26b7d373de75'
+					},
+					header: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					success: function(res) {
+						uni.setStorageSync('token', res.data)
+						console.log(res.data);
+					}
+				})
+
+			},
+			fail: function(e) {
+				console.log(e.code);
+			}
 		})
 	}
 </script>

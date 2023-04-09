@@ -6,6 +6,10 @@ if (!Math) {
   "./pages/whitePage/whitePage.js";
   "./pages/fillInfo/fillInfo.js";
   "./pages/confirm/confirm.js";
+  "./pages/opendb-contacts/add.js";
+  "./pages/opendb-contacts/edit.js";
+  "./pages/opendb-contacts/list.js";
+  "./pages/opendb-contacts/detail.js";
 }
 const _sfc_main = {
   onLaunch: function() {
