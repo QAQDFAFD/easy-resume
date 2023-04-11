@@ -111,11 +111,6 @@
 						name: "跨全端",
 						textSize: 10,
 						data: undefined
-					},
-					{
-						name: "跨全端",
-						textSize: 12,
-						data: undefined
 					}
 				]
 			});
