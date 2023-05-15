@@ -15,7 +15,6 @@
 				Connect us
 			</view>
 		</view>
-
 	</view>
 </template>
 

@@ -9,5 +9,5 @@ const _sfc_main = {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {};
 }
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ed0f9412"], ["__file", "D:/HBuilderX/项目/easy-resume/pages/firstPage/firstPage.vue"]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ed0f9412"], ["__file", "D:/Projects/frontend/easy-resume/pages/firstPage/firstPage.vue"]]);
 wx.createPage(MiniProgramPage);

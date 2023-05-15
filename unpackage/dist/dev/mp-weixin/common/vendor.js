@@ -1497,7 +1497,7 @@ function populateParameters(fromRes, toRes) {
   let _SDKVersion = SDKVersion;
   const hostLanguage = language.replace(/_/g, "-");
   const parameters = {
-    appId: "",
+    appId: "__UNI__1C4F51E",
     appName: "uniapp-component-test",
     appVersion: "1.0.0",
     appVersionCode: "100",
@@ -1641,7 +1641,7 @@ const getAppBaseInfo = {
       hostName: _hostName,
       hostSDKVersion: SDKVersion,
       hostTheme: theme,
-      appId: "",
+      appId: "__UNI__1C4F51E",
       appName: "uniapp-component-test",
       appVersion: "1.0.0",
       appVersionCode: "100",
@@ -7333,10 +7333,10 @@ function g(e2) {
 function m(e2) {
   return e2 && "string" == typeof e2 ? JSON.parse(e2) : e2;
 }
-const y = true, _ = "mp-weixin", v = m([]), S = _, k = m(""), I = m("[]") || [];
+const y = true, _ = "mp-weixin", v = m([]), S = _, k = m('{\n    "address": [\n        "127.0.0.1",\n        "10.0.1.109"\n    ],\n    "debugPort": 9000,\n    "initialLaunchType": "local",\n    "servePort": 7000,\n    "skipFiles": [\n        "<node_internals>/**",\n        "D:/Programs/HBuilderX/plugins/unicloud/**/*.js"\n    ]\n}\n'), I = m('[{"provider":"aliyun","spaceName":"easy-resume","spaceId":"mp-cb1db262-7994-471c-a97f-3bdb2b80dd4a","clientSecret":"hxOgl77myFQ6LeHsobpg6g==","endpoint":"https://api.next.bspapp.com"}]') || [];
 let T = "";
 try {
-  T = "";
+  T = "__UNI__1C4F51E";
 } catch (e2) {
 }
 let A = {};

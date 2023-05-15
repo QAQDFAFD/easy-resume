@@ -90,5 +90,5 @@ const _sfc_main = {
     };
   }
 };
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "D:/HBuilderX/项目/easy-resume/pages/whitePage/whitePage.vue"]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "D:/Projects/frontend/easy-resume/pages/whitePage/whitePage.vue"]]);
 wx.createPage(MiniProgramPage);
