@@ -1,0 +1,7 @@
+{
+  "name": "firstCloudObj",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

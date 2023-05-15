@@ -12,13 +12,54 @@
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
+		},
+		{
+			"path": "pages/fillInfo/fillInfo",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		}, {
+			"path": "pages/confirm/confirm",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	],
+	,{
+    "path": "pages/opendb-contacts/add",
+    "style": {
+        "navigationBarTitleText": "新增"
+    }
+}
+,{
+    "path": "pages/opendb-contacts/edit",
+    "style": {
+        "navigationBarTitleText": "编辑"
+    }
+}
+,{
+    "path": "pages/opendb-contacts/list",
+    "style": {
+        "navigationBarTitleText": "列表"
+    }
+}
+,{
+    "path": "pages/opendb-contacts/detail",
+    "style": {
+        "navigationBarTitleText": "详情"
+    }
+}
+],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarTitleText": "易简简历",
+		"navigationBarBackgroundColor": "#000",
+		"navigationStyle": "custom",
 		"backgroundColor": "#F8F8F8"
 	},
-	"uniIdRouter": {}
+	"uniIdRouter": {},
+	"scope.phoneNumber": {
+		"desc": "你的手机号码将用于小程序的登录和用户体验"
+	}
 }

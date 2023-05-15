@@ -1,12 +1,19 @@
 {
   "pages": [
     "pages/firstPage/firstPage",
-    "pages/whitePage/whitePage"
+    "pages/whitePage/whitePage",
+    "pages/fillInfo/fillInfo",
+    "pages/confirm/confirm",
+    "pages/opendb-contacts/add",
+    "pages/opendb-contacts/edit",
+    "pages/opendb-contacts/list",
+    "pages/opendb-contacts/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
+    "navigationBarTitleText": "易简简历",
+    "navigationBarBackgroundColor": "#000",
+    "navigationStyle": "custom",
     "backgroundColor": "#F8F8F8"
   },
   "usingComponents": {}

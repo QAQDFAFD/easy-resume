@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@qiun/uni-ucharts": "^2.5.0-20230101"
+  }
+}
