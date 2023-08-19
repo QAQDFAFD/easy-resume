@@ -187,8 +187,7 @@ const _sfc_main = {
     },
     open(direction) {
       if (this.showPopup) {
-        clearTimeout(this.timer);
-        this.showPopup = false;
+        return;
       }
       let innerType = ["top", "center", "bottom", "left", "right", "message", "dialog", "share"];
       if (!(direction && innerType.indexOf(direction) !== -1)) {
@@ -367,5 +366,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     l: common_vendor.n($options.isDesktop ? "fixforpc-z-index" : "")
   }) : {});
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/Projects/frontend/easy-resume/uni_modules/uni-popup/components/uni-popup/uni-popup.vue"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/Projects/frontend/esay-resume1/uni_modules/uni-popup/components/uni-popup/uni-popup.vue"]]);
 wx.createComponent(Component);

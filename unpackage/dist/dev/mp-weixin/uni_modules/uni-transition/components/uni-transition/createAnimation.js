@@ -3,7 +3,9 @@ const common_vendor = require("../../../../common/vendor.js");
 class MPAnimation {
   constructor(options, _this) {
     this.options = options;
-    this.animation = common_vendor.index.createAnimation(options);
+    this.animation = common_vendor.index.createAnimation({
+      ...options
+    });
     this.currentStepAnimates = {};
     this.next = 0;
     this.$ = _this;

@@ -2,7 +2,7 @@
 const common_vendor = require("../../../../common/vendor.js");
 const _sfc_main = {
   name: "uniDataChecklist",
-  mixins: [common_vendor.Es.mixinDatacom || {}],
+  mixins: [common_vendor.Ds.mixinDatacom || {}],
   emits: ["input", "update:modelValue", "change"],
   props: {
     mode: {
@@ -427,5 +427,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     v: $data.isTop + "px"
   });
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/Projects/frontend/easy-resume/uni_modules/uni-data-checkbox/components/uni-data-checkbox/uni-data-checkbox.vue"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/Projects/frontend/esay-resume1/uni_modules/uni-data-checkbox/components/uni-data-checkbox/uni-data-checkbox.vue"]]);
 wx.createComponent(Component);

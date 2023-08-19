@@ -96,5 +96,5 @@ const _sfc_main = {
     };
   }
 };
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-aec6f18f"], ["__file", "D:/Projects/frontend/easy-resume/pages/fillInfo/fillInfo.vue"]]);
+const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-aec6f18f"], ["__file", "D:/Projects/frontend/esay-resume1/pages/fillInfo/fillInfo.vue"]]);
 wx.createPage(MiniProgramPage);

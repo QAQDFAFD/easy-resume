@@ -5,18 +5,6 @@
 			<view>You can fill in some information finally choose a template to generate your customized resume.</view>
 		</view>
 		<view class="start" @click="start">START</view>
-		<!-- <unicloud-db ref="udb" v-slot:default='{data,loading,error,options}' collection="contacts">
-			<view v-if='error'>
-
-			</view>
-			<view v-else>
-				<uni-list>
-					<uni-list-item v-for="item in data" :key="item._id" :note="item.phone" link>{{item.name}}
-					</uni-list-item>
-				</uni-list>
-
-			</view>
-		</unicloud-db> -->
 		<view class="footer">
 			<view class="chat">
 				<image src="https://picgo-use-images.oss-cn-shanghai.aliyuncs.com/images/user.png" mode=""></image>Chat
@@ -37,21 +25,13 @@
 	} from 'vue'
 	const popup = ref(null)
 	const connect = function() {
+		console.log(123);
 		popup.value.open()
 	}
-	// 导入云对象
-	const firstCloudObj = uniCloud.importObject('firstCloudObj')
 
-	// const add = () => {
-	// 	const db = uniCloud.database()
-	// 	db.collection('contacts').add({
-	// 		"name": "李嘉俊",
-	// 		"phone": "手机15195382735"
-	// 	}).then(res => console.log("123",res))
-	// }
 	const start = () => {
 		// 执行登录
-		login()
+		// login()
 		uni.navigateTo({
 			url: "/pages/fillInfo/fillInfo",
 		})

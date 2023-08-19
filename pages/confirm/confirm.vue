@@ -1,9 +1,13 @@
 <template>
-	<view>
+	<view class="container">
 		{{userInfo.userInfo}}
-		<view class="charts-box">
-			<qiun-data-charts type="word" :opts="opts" :chartData="chartData" />
-		</view>
+		  <view class="charts-box">
+		    <qiun-data-charts 
+		      type="word"
+		      :opts="opts"
+		      :chartData="chartData1"
+		    />
+		  </view>
 	</view>
 </template>
 
@@ -16,7 +20,7 @@
 	} from '../../store/info.js'
 	const userInfo = info()
 
-	const chartData = reactive({})
+	const chartData1 = reactive({})
 
 	const opts = reactive({
 		color: ["#1890FF", "#91CB74", "#FAC858", "#EE6666", "#73C0DE", "#3CA272", "#FC8452", "#9A60B4",
@@ -36,7 +40,7 @@
 		//模拟从服务器获取数据时的延时
 		setTimeout(() => {
 			//模拟服务器返回数据，如果数据格式和标准格式不同，需自行按下面的格式拼接
-			let res = reactive({
+			let res = {
 				series: [{
 						name: "跨全端图表",
 						textSize: 25,
@@ -113,16 +117,22 @@
 						data: undefined
 					}
 				]
-			});
-			this.chartData = JSON.parse(JSON.stringify(res));
+			};
+			console.log(JSON.parse(JSON.stringify(res)));
+			 chartData1.series = JSON.parse(JSON.stringify(res)).series;
 		}, 500);
 	}
-
-	// onReady() {
-	// 	getServerData()
-	// }
+	getServerData()
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.container {
+	width: 100vw;
+	height: 100vh;
+	
+	.charts-box {
+		width: 100vw;
+		height: 50vh;
+	}
+}
 </style>

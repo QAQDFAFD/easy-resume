@@ -12,6 +12,7 @@
 		<swiper :current="current" touchable='false'>
 			<!-- 第一页 -->
 			<!-- 姓名、联系方式（邮箱、手机） -->
+			<!-- 第二页等等 -->
 			<swiper-item v-for="(item,index) in question" :key="item">
 				<image :src="index % 2 === 0 ? imgs[0] : imgs[1]" mode="">
 				</image>

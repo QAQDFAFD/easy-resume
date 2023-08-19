@@ -20,7 +20,7 @@ function obj2strStyle(obj) {
 }
 const _sfc_main = {
   name: "uni-easyinput",
-  emits: ["click", "iconClick", "update:modelValue", "input", "focus", "blur", "confirm", "clear", "eyes", "change"],
+  emits: ["click", "iconClick", "update:modelValue", "input", "focus", "blur", "confirm", "clear", "eyes", "change", "keyboardheightchange"],
   model: {
     prop: "modelValue",
     event: "update:modelValue"
@@ -444,5 +444,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     ab: common_vendor.s($options.boxStyle)
   });
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/Projects/frontend/easy-resume/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/Projects/frontend/esay-resume1/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput.vue"]]);
 wx.createComponent(Component);

@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "description": "项目配置文件。",
   "packOptions": {
     "ignore": [],
@@ -16,75 +15,13 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-=======
-    "description": "项目配置文件。",
-    "packOptions": {
-        "ignore": [],
-        "include": []
-    },
-    "setting": {
-        "urlCheck": false,
-        "es6": true,
-        "postcss": false,
-        "minified": false,
-        "newFeature": true,
-        "bigPackageSizeSupport": true,
-        "babelSetting": {
-            "ignore": [],
-            "disablePlugins": [],
-            "outputPath": ""
-        }
-    },
-    "compileType": "miniprogram",
-    "libVersion": "2.30.4",
-    "appid": "wx402e26b7d373de75",
-    "projectname": "uniapp-component-test",
-    "condition": {
-        "search": {
-            "current": -1,
-            "list": []
-        },
-        "conversation": {
-            "current": -1,
-            "list": []
-        },
-        "game": {
-            "current": -1,
-            "list": []
-        },
-        "miniprogram": {
-            "current": -1,
-            "list": []
-        }
-    },
-    "editorSetting": {
-        "tabIndent": "insertSpaces",
-        "tabSize": 4
->>>>>>> 3bd2341050c9463ee307d62f1f309b162e67d113
     }
   },
   "compileType": "miniprogram",
-  "libVersion": "2.32.0",
-  "appid": "wx402e26b7d373de75",
-  "projectname": "uniapp-component-test",
-  "condition": {
-    "search": {
-      "current": -1,
-      "list": []
-    },
-    "conversation": {
-      "current": -1,
-      "list": []
-    },
-    "game": {
-      "current": -1,
-      "list": []
-    },
-    "miniprogram": {
-      "current": -1,
-      "list": []
-    }
-  },
+  "libVersion": "3.0.0",
+  "appid": "touristappid",
+  "projectname": "esay-resume1",
+  "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2

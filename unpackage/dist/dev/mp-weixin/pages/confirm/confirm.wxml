@@ -1,1 +1,1 @@
-<view>{{a}} <view class="charts-box"><qiun-data-charts wx:if="{{b}}" u-i="1958587c-0" bind:__l="__l" u-p="{{b}}"/></view></view>
+<view class="container data-v-eec36e84">{{a}} <view class="charts-box data-v-eec36e84"><qiun-data-charts wx:if="{{b}}" class="data-v-eec36e84" u-i="eec36e84-0" bind:__l="__l" u-p="{{b}}"/></view></view>
